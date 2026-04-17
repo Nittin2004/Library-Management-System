@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
@@ -23,13 +24,20 @@ const navItems = [
 export default function Sidebar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
   if (!user) return null;
 
   const handleLogout = () => { logout(); navigate('/'); };
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">
+    <>
+      <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? '✕' : '☰'}
+      </button>
+      <div className={`sidebar-overlay ${isOpen ? 'show' : ''}`} onClick={() => setIsOpen(false)}></div>
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className="sidebar-brand">
         <span className="brand-icon">📚</span>
         <span className="brand-name">LibraryMS</span>
       </div>
@@ -45,7 +53,7 @@ export default function Sidebar() {
           if (!item.roles.includes(user.role)) return null;
           if (item.header) return <div key={i} className="nav-section-label">{item.label}</div>;
           return (
-            <NavLink key={i} to={item.to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+            <NavLink key={i} to={item.to} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`} onClick={() => setIsOpen(false)}>
               {item.label}
             </NavLink>
           );
@@ -55,6 +63,7 @@ export default function Sidebar() {
         <a href="chart.html" target="_blank" className="chart-link-sidebar">📊 Flow Chart</a>
         <button className="btn-logout" onClick={handleLogout}>🚪 Logout</button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
