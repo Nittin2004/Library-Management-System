@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const User = require('./models/User');
 
 const app = express();
 app.use(cors());
@@ -18,7 +20,38 @@ app.use('/api/reports', require('./routes/reports'));
 app.get('/', (req, res) => res.json({ message: 'Library Management API running' }));
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
+  .then(async () => {
+    console.log('✅ MongoDB connected');
+    try {
+      const adminExists = await User.findOne({ username: 'admin' });
+      if (!adminExists) {
+        const salt = await bcrypt.genSalt(10);
+        const adminPasswordHash = await bcrypt.hash('admin123', salt);
+        await User.create({
+          username: 'admin',
+          name: 'Admin User',
+          passwordHash: adminPasswordHash,
+          role: 'admin'
+        });
+        console.log('✅ Demo Admin created');
+      }
+
+      const userExists = await User.findOne({ username: 'user' });
+      if (!userExists) {
+        const salt = await bcrypt.genSalt(10);
+        const userPasswordHash = await bcrypt.hash('user123', salt);
+        await User.create({
+          username: 'user',
+          name: 'Demo User',
+          passwordHash: userPasswordHash,
+          role: 'user'
+        });
+        console.log('✅ Demo User created');
+      }
+    } catch (seedErr) {
+      console.error('❌ Error creating demo users:', seedErr.message);
+    }
+  })
   .catch(err => console.error('❌ MongoDB error:', err.message));
 
 // Vercel serverless functions don't need app.listen

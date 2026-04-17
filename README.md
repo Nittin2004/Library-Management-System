@@ -2,7 +2,7 @@
 
 A full-stack, role-based Library Management System built with the MERN stack (MongoDB, Express, React, Node.js). 
 
-## 🚀 Evaluator / Reviewer Guide
+##  Evaluator / Reviewer Guide
 
 Since the database is running locally and contains a lot of interconnected data, I have provided a **Seed Script** so you do not have to manually enter books, members, or users from scratch. 
 
