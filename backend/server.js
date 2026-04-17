@@ -18,10 +18,15 @@ app.use('/api/reports', require('./routes/reports'));
 app.get('/', (req, res) => res.json({ message: 'Library Management API running' }));
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ MongoDB connected');
-    app.listen(process.env.PORT || 5000, () =>
-      console.log(`🚀 Server running on port ${process.env.PORT || 5000}`)
-    );
-  })
-  .catch(err => { console.error('❌ MongoDB error:', err.message); process.exit(1); });
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB error:', err.message));
+
+// Vercel serverless functions don't need app.listen
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(process.env.PORT || 5000, () =>
+    console.log(`🚀 Server running on port ${process.env.PORT || 5000}`)
+  );
+}
+
+// Export the Express API
+module.exports = app;
