@@ -34,9 +34,6 @@ export default function Login() {
 
   return (
     <div className="login-page">
-      <div className="chart-banner">
-        <a href="/chart.html" target="_blank">📊 View Application Flow Chart</a>
-      </div>
       <div className="login-card">
         <div className="login-header">
           <div className="logo">📚</div>
