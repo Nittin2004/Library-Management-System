@@ -16,8 +16,14 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ id: user._id, username: user.username, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: '8h' });
     res.json({ token, user: { username: user.username, role: user.role, name: user.name } });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error('Login Error:', err);
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'production' ? null : err.stack 
+    });
   }
 });
+
 
 module.exports = router;
