@@ -5,6 +5,15 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 
+// Check required environment variables
+const requiredEnv = ['MONGO_URI', 'JWT_SECRET'];
+requiredEnv.forEach(env => {
+  if (!process.env[env]) {
+    console.error(`❌ Missing environment variable: ${env}`);
+  }
+});
+
+
 const app = express();
 app.use(cors());
 app.use(express.json());
