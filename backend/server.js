@@ -54,12 +54,15 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch(err => console.error('❌ MongoDB error:', err.message));
 
-// Vercel serverless functions don't need app.listen
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(process.env.PORT || 5000, () =>
-    console.log(`🚀 Server running on port ${process.env.PORT || 5000}`)
-  );
+// Start server only in development
+// Vercel handles the serverless execution by exporting the app
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+if (!isProduction) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`🚀 Local server running on port ${PORT}`));
 }
+
 
 // Export the Express API
 module.exports = app;
